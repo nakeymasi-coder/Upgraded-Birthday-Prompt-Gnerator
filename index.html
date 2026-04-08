@@ -1,0 +1,1891 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Birthday Flyer Prompt Generator</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      justify-content: center;
+      padding: 12px;
+      height: 100%;
+      overflow: hidden;
+    }
+    .container {
+      width: 100%;
+      max-width: 980px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px 20px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    .header p {
+      margin: 6px 0 0 0;
+      font-size: 12px;
+      opacity: 0.9;
+    }
+    .content {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .section { margin-bottom: 28px; }
+    .section-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #333;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 12px;
+      display: block;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .form-row.three { grid-template-columns: 1fr 1fr 1fr; }
+    .form-row.full { grid-template-columns: 1fr; }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 6px;
+      display: block;
+    }
+    select, input, textarea {
+      padding: 10px 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 13px;
+      transition: all 0.2s ease;
+      background: white;
+      color: #333;
+    }
+    select:focus, input:focus, textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23333' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 32px;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 72px;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .checkbox-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px;
+    }
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .checkbox-item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      accent-color: #667eea;
+    }
+    .checkbox-item label {
+      margin: 0;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .button-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      flex: 1;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+    .btn-copy {
+      background: #f0f0f0;
+      color: #333;
+      padding: 10px 16px;
+    }
+    .btn-copy:hover { background: #e0e0e0; }
+    .btn-copy.copied { background: #4caf50; color: white; }
+    .output-section {
+      background: #f9f9f9;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 30px;
+    }
+    .output-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #333;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .output-box {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 16px;
+      min-height: 220px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #333;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      font-family: 'Courier New', monospace;
+    }
+    .output-empty { color: #999; font-style: italic; }
+    .info-message {
+      background: #e3f2fd;
+      border-left: 4px solid #667eea;
+      padding: 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #1565c0;
+      margin-top: 12px;
+    }
+    details.collapsible {
+      border: 1px solid #e3e3e3;
+      border-radius: 10px;
+      padding: 0;
+      background: #fbfbfb;
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+    details.collapsible summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 12px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #333;
+      background: #f3f3f3;
+    }
+    details.collapsible summary::-webkit-details-marker { display: none; }
+    details.collapsible .details-body {
+      padding: 14px;
+    }
+    .helper {
+      font-size: 11px;
+      color: #777;
+      margin-top: 4px;
+    }
+    @media (max-width: 700px) {
+      .form-row, .form-row.three { grid-template-columns: 1fr; }
+      .header h1 { font-size: 22px; }
+      .content { padding: 16px; }
+    }
+  
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: auto;
+      width: 42vw;
+      height: 42vw;
+      border-radius: 50%;
+      filter: blur(24px);
+      opacity: 0.25;
+      pointer-events: none;
+      animation: floatGlow 14s ease-in-out infinite;
+      z-index: 0;
+    }
+    body::before {
+      top: -10vw;
+      left: -8vw;
+      background: radial-gradient(circle, rgba(255,182,193,0.55) 0%, rgba(255,255,255,0) 70%);
+    }
+    body::after {
+      right: -10vw;
+      bottom: -12vw;
+      background: radial-gradient(circle, rgba(255,215,0,0.35) 0%, rgba(255,255,255,0) 70%);
+      animation-delay: -7s;
+    }
+    @keyframes floatGlow {
+      0%,100% { transform: translateY(0) translateX(0) scale(1); }
+      50% { transform: translateY(18px) translateX(12px) scale(1.08); }
+    }
+    .container { position: relative; z-index: 1; }
+    .container::before {
+      content: "✦ ✨ ✦ ✨ ✦";
+      position: absolute;
+      top: 84px;
+      left: -120px;
+      width: 260px;
+      font-size: 22px;
+      letter-spacing: 12px;
+      color: rgba(255,255,255,0.42);
+      transform: rotate(-18deg);
+      animation: shimmerFloat 11s linear infinite;
+      pointer-events: none;
+    }
+    .container::after {
+      content: "✦ ✨ ✦ ✨ ✦";
+      position: absolute;
+      bottom: 140px;
+      right: -130px;
+      width: 260px;
+      font-size: 22px;
+      letter-spacing: 12px;
+      color: rgba(118,75,162,0.18);
+      transform: rotate(16deg);
+      animation: shimmerFloat 13s linear infinite reverse;
+      pointer-events: none;
+    }
+    @keyframes shimmerFloat {
+      0% { transform: translateY(0) rotate(-18deg); }
+      50% { transform: translateY(-10px) rotate(-14deg); }
+      100% { transform: translateY(0) rotate(-18deg); }
+    }
+    .section {
+      position: relative;
+      border: 1px solid rgba(102,126,234,0.12);
+      border-radius: 16px;
+      padding: 16px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(245,245,255,0.86));
+      box-shadow: 0 12px 30px rgba(102,126,234,0.06), inset 0 1px 0 rgba(255,255,255,0.7);
+    }
+    .section-title {
+      text-shadow: 0 0 12px rgba(102,126,234,0.12);
+    }
+    .form-group select,
+    .form-group input,
+    .form-group textarea,
+    .checkbox-group {
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.3), 0 8px 20px rgba(102,126,234,0.05);
+    }
+    .gender-section { margin-top: 14px; }
+    .gender-panel {
+      border: 1px solid rgba(118,75,162,0.14);
+      border-radius: 14px;
+      padding: 14px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(250,246,255,0.9));
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5);
+    }
+    .gender-panel h3 {
+      margin: 0 0 12px 0;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #6a53b3;
+    }
+    .hidden-by-gender { display: none !important; }
+    .helper-inline {
+      margin-top: 6px;
+      font-size: 11px;
+      color: #6a53b3;
+    }
+
+
+    .scroll-side-btn {
+      position: fixed;
+      right: 14px;
+      width: 48px;
+      height: 48px;
+      border: none;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(102,126,234,0.95) 0%, rgba(118,75,162,0.95) 100%);
+      color: white;
+      font-size: 22px;
+      font-weight: 700;
+      cursor: pointer;
+      z-index: 999;
+      box-shadow: 0 0 12px rgba(102,126,234,0.65), 0 0 28px rgba(118,75,162,0.45);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+      opacity: 0.92;
+    }
+    .scroll-side-btn:hover {
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 0 16px rgba(102,126,234,0.9), 0 0 34px rgba(118,75,162,0.62);
+    }
+    .scroll-side-btn:active { transform: scale(0.98); }
+    .scroll-up-btn { top: 50%; margin-top: -58px; }
+    .scroll-down-btn { top: 50%; margin-top: 12px; }
+    @media (max-width: 700px) {
+      .scroll-side-btn {
+        right: 10px;
+        width: 42px;
+        height: 42px;
+        font-size: 18px;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <button type="button" class="scroll-side-btn scroll-up-btn" id="scrollUpBtn" aria-label="Scroll up">↑</button>
+  <button type="button" class="scroll-side-btn scroll-down-btn" id="scrollDownBtn" aria-label="Scroll down">↓</button>
+  <div class="container">
+    <div class="header">
+      <h1><strong>🎂 Birthday Flyer Prompt Generator</strong></h1>
+      <p>Create custom AI image prompts for stunning birthday flyers</p>
+      <div class="announcement-bar"><div class="announcement-track">✨ Luxury Generator Bundle • Instant Download • Premium Images •</div></div>
+    </div>
+
+    <div class="content">
+      <form id="generatorForm">
+
+        <div class="section">
+          <span class="section-title">👤 Person Details</span>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="ageGroup">Age Group</label>
+              <select id="ageGroup" required>
+                <option value="">Select age group...</option>
+                <option value="Kids (1–10)">Kids (1–10)</option>
+                <option value="Tween (11–12)">Tween (11–12)</option>
+                <option value="Teen (13–19)">Teen (13–19)</option>
+                <option value="Adult (20–49)">Adult (20–49)</option>
+                <option value="Milestone (50+)">Milestone (50+)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="gender">Gender</label>
+              <select id="gender" required>
+                <option value="">Select gender...</option>
+                <option value="Boy">Boy</option>
+                <option value="Girl">Girl</option>
+                <option value="Man">Man</option>
+                <option value="Woman">Woman</option>
+                <option value="Non-binary">Non-binary</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="exactAge">Exact Age (1–100)</label>
+              <input type="number" id="exactAge" min="1" max="100" placeholder="e.g., 8">
+            </div>
+            <div class="form-group">
+              <label for="customName">Birthday Person's Name</label>
+              <input type="text" id="customName" placeholder="e.g., Kayla">
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <span class="section-title">💎 Character Styling</span>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="skinTone">Skin Tone</label>
+              <select id="skinTone" class="dynamic-select" data-category="skinTone"></select>
+            </div>
+            <div class="form-group">
+              <label for="eyeColor">Eye Color</label>
+              <select id="eyeColor" class="dynamic-select" data-category="eyeColor"></select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="hairColor">Hair Color</label>
+              <select id="hairColor" class="dynamic-select" data-category="hairColor"></select>
+            </div>
+            <div class="form-group">
+              <label for="ornateElements">Ornate Elements</label>
+              <select id="ornateElements" class="dynamic-select" data-category="ornateElements"></select>
+            </div>
+          </div>
+
+          <div class="gender-section" id="femaleFields">
+            <div class="gender-panel">
+              <h3>Female Styling</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="femaleHairstyle">Hairstyle</label>
+                  <select id="femaleHairstyle"></select>
+                </div>
+                <div class="form-group">
+                  <label for="femaleOutfit">Women Outfit</label>
+                  <select id="femaleOutfit"></select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="femaleShoes">Women Shoes</label>
+                  <select id="femaleShoes"></select>
+                </div>
+                <div class="form-group">
+                  <label for="femaleAccessories">Women Accessories</label>
+                  <select id="femaleAccessories"></select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="lashes">Lashes</label>
+                  <select id="lashes"></select>
+                </div>
+                <div class="form-group">
+                  <label for="makeup">Makeup</label>
+                  <select id="makeup"></select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="hairGems">Hair Gems</label>
+                  <select id="hairGems"></select>
+                </div>
+                <div class="form-group">
+                  <label for="eyebrows">Eyebrows</label>
+                  <select id="eyebrows"></select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="nails">Nails</label>
+                  <select id="nails"></select>
+                </div>
+                <div class="form-group">
+                  <label for="earrings">Earrings</label>
+                  <select id="earrings"></select>
+                </div>
+              </div>
+              <div class="form-row full">
+                <div class="form-group">
+                  <label for="hairEdges">Hair Edges</label>
+                  <select id="hairEdges"></select>
+                  <div class="helper-inline">Women only.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="gender-section" id="maleFields">
+            <div class="gender-panel">
+              <h3>Male Styling</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="maleHairstyle">Hairstyle</label>
+                  <select id="maleHairstyle"></select>
+                </div>
+                <div class="form-group">
+                  <label for="maleOutfit">Men Outfit</label>
+                  <select id="maleOutfit"></select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="maleShoes">Men Shoes</label>
+                  <select id="maleShoes"></select>
+                </div>
+                <div class="form-group">
+                  <label for="maleAccessories">Men Accessories</label>
+                  <select id="maleAccessories"></select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="customCharacterNotes">Custom Character Notes</label>
+              <textarea id="customCharacterNotes" placeholder="Add extra character notes, facial details, styling notes, or glam instructions"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <span class="section-title">📐 Flyer Specifications</span>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="flyerSize">Flyer Size</label>
+              <select id="flyerSize" class="dynamic-select" data-category="flyerSize" required></select>
+            </div>
+            <div class="form-group">
+              <label for="theme">Theme / Vibe</label>
+              <select id="theme" class="dynamic-select" data-category="theme" required></select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="presetTheme">Preset Theme</label>
+              <select id="presetTheme"></select>
+              <div class="helper">Kids and adults are separated automatically by age group.</div>
+            </div>
+            <div class="form-group">
+              <label for="textPlacement">Text Placement</label>
+              <select id="textPlacement" class="dynamic-select" data-category="textPlacement"></select>
+              <div class="helper">Centered is included, plus lots of placement options.</div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="customFlyerSpecs">Custom Flyer Specifications</label>
+              <input type="text" id="customFlyerSpecs" placeholder="Add extra flyer spec notes">
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <span class="section-title">🎨 Color Palette</span>
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="colorPalette">Color Palette</label>
+              <select id="colorPalette" class="dynamic-select" data-category="colorPalette" required></select>
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="customColorNotes">Custom Color Notes</label>
+              <input type="text" id="customColorNotes" placeholder="e.g., add metallic rose gold accents">
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <span class="section-title">🎭 Scene &amp; Photo Style</span>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="scene">Scene Style</label>
+              <select id="scene" class="dynamic-select" data-category="scene" required></select>
+            </div>
+            <div class="form-group">
+              <label for="photoStyle">Main Photo Style</label>
+              <select id="photoStyle" class="dynamic-select" data-category="photoStyle" required></select>
+            </div>
+          </div>
+
+          <details class="collapsible" open>
+            <summary>Different Locations</summary>
+            <div class="details-body">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="locationStyle">Location</label>
+                  <select id="locationStyle" class="dynamic-select" data-category="locationStyle"></select>
+                </div>
+                <div class="form-group">
+                  <label for="customLocation">Custom Location</label>
+                  <input type="text" id="customLocation" placeholder="Add your own location note">
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <details class="collapsible">
+            <summary>Different Backgrounds</summary>
+            <div class="details-body">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="backgroundStyle">Background</label>
+                  <select id="backgroundStyle" class="dynamic-select" data-category="backgroundStyle"></select>
+                </div>
+                <div class="form-group">
+                  <label for="customBackground">Custom Background</label>
+                  <input type="text" id="customBackground" placeholder="Add your own background note">
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <details class="collapsible">
+            <summary>Fog, Weather, Time, and Season</summary>
+            <div class="details-body">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="fogStyle">Fog</label>
+                  <select id="fogStyle" class="dynamic-select" data-category="fogStyle"></select>
+                </div>
+                <div class="form-group">
+                  <label for="weatherStyle">Weather</label>
+                  <select id="weatherStyle" class="dynamic-select" data-category="weatherStyle"></select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="timeOfDay">Time of Day</label>
+                  <select id="timeOfDay" class="dynamic-select" data-category="timeOfDay"></select>
+                </div>
+                <div class="form-group">
+                  <label for="seasonStyle">Season</label>
+                  <select id="seasonStyle" class="dynamic-select" data-category="seasonStyle"></select>
+                </div>
+              </div>
+              <div class="form-row full">
+                <div class="form-group">
+                  <label for="customSceneNotes">Custom Scene Notes</label>
+                  <textarea id="customSceneNotes" placeholder="Add extra scene, background, fog, weather, time, or season notes"></textarea>
+                </div>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <div class="section">
+          <span class="section-title">📸 Photo &amp; Decor Details</span>
+          <div class="form-row full" id="photoNotesRow">
+            <div class="form-group">
+              <label for="photoNotes">Describe the Person (outfit, pose, expression)</label>
+              <textarea id="photoNotes" placeholder="e.g., Wearing a sparkly crop top, confident pose with hand on hip, big happy smile"></textarea>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="propStyle">Primary Prop</label>
+              <select id="propStyle" class="dynamic-select" data-category="propStyle"></select>
+            </div>
+            <div class="form-group">
+              <label for="decorationStyle">Decoration Style</label>
+              <select id="decorationStyle" class="dynamic-select" data-category="decorationStyle"></select>
+            </div>
+          </div>
+
+          <div class="form-row full">
+            <div class="form-group">
+              <label>Props &amp; Decorations</label>
+              <div class="checkbox-group">
+                <div class="checkbox-item"><input type="checkbox" id="prop-balloons" value="Balloons"> <label for="prop-balloons">Balloons</label></div>
+                <div class="checkbox-item"><input type="checkbox" id="prop-confetti" value="Confetti"> <label for="prop-confetti">Confetti</label></div>
+                <div class="checkbox-item"><input type="checkbox" id="prop-sparkles" value="Sparkles"> <label for="prop-sparkles">Sparkles</label></div>
+                <div class="checkbox-item"><input type="checkbox" id="prop-crown" value="Crown/Tiara"> <label for="prop-crown">Crown/Tiara</label></div>
+                <div class="checkbox-item" id="prop-alcohol-item" style="display:none;"><input type="checkbox" id="prop-alcohol" value="Money/Champagne"> <label for="prop-alcohol">Money/Champagne</label></div>
+                <div class="checkbox-item"><input type="checkbox" id="prop-sports" value="Sports gear"> <label for="prop-sports">Sports gear</label></div>
+                <div class="checkbox-item"><input type="checkbox" id="prop-controller" value="Game controller"> <label for="prop-controller">Game controller</label></div>
+                <div class="checkbox-item"><input type="checkbox" id="prop-teddy" value="Teddy bears"> <label for="prop-teddy">Teddy bears</label></div>
+                <div class="checkbox-item"><input type="checkbox" id="prop-roses" value="Roses"> <label for="prop-roses">Roses</label></div>
+                <div class="checkbox-item"><input type="checkbox" id="prop-fireworks" value="Fireworks"> <label for="prop-fireworks">Fireworks</label></div>
+                <div class="checkbox-item"><input type="checkbox" id="prop-designer-bags" value="Designer bags"> <label for="prop-designer-bags">Designer bags</label></div>
+                <div class="checkbox-item"><input type="checkbox" id="prop-sunglasses" value="Luxury sunglasses"> <label for="prop-sunglasses">Luxury sunglasses</label></div>
+                <div class="checkbox-item"><input type="checkbox" id="prop-jewelry" value="Diamond jewelry"> <label for="prop-jewelry">Diamond jewelry</label></div>
+                <div class="checkbox-item"><input type="checkbox" id="prop-watch" value="Luxury watches"> <label for="prop-watch">Luxury watches</label></div>
+                <div class="checkbox-item"><input type="checkbox" id="prop-cash" value="Stacks of cash"> <label for="prop-cash">Stacks of cash</label></div>
+                <div class="checkbox-item"><input type="checkbox" id="prop-flowers" value="Fresh flower arrangements"> <label for="prop-flowers">Fresh flower arrangements</label></div>
+                <div class="checkbox-item"><input type="checkbox" id="prop-balloons-gold" value="Gold foil balloons"> <label for="prop-balloons-gold">Gold foil balloons</label></div>
+                <div class="checkbox-item"><input type="checkbox" id="prop-feathers" value="Feather accents"> <label for="prop-feathers">Feather accents</label></div>
+                <div class="checkbox-item"><input type="checkbox" id="prop-lights" value="String/neon lights"> <label for="prop-lights">String/neon lights</label></div>
+                <div class="checkbox-item"><input type="checkbox" id="prop-silk" value="Silk ribbons"> <label for="prop-silk">Silk ribbons</label></div>
+                <div class="checkbox-item"><input type="checkbox" id="prop-rainbow" value="Rainbow decorations"> <label for="prop-rainbow">Rainbow decorations</label></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="customDecorNotes">Custom Decor Notes</label>
+              <textarea id="customDecorNotes" placeholder="Add extra prop and decoration notes"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <span class="section-title">✏️ Typography</span>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="typography">Typography Style</label>
+              <select id="typography" class="dynamic-select" data-category="typography" required></select>
+            </div>
+            <div class="form-group">
+              <label for="textEffects">Text Effects</label>
+              <select id="textEffects" class="dynamic-select" data-category="textEffects"></select>
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="customTypographyNotes">Custom Typography Notes</label>
+              <input type="text" id="customTypographyNotes" placeholder="Add extra font or text styling notes">
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <span class="section-title">🎞️ Art &amp; Technical Controls</span>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="artStyle">Art Style</label>
+              <select id="artStyle" class="dynamic-select" data-category="artStyle"></select>
+            </div>
+            <div class="form-group">
+              <label for="shadowStyle">Shadow</label>
+              <select id="shadowStyle" class="dynamic-select" data-category="shadowStyle"></select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cameraAngle">Camera Angle</label>
+              <select id="cameraAngle" class="dynamic-select" data-category="cameraAngle"></select>
+            </div>
+            <div class="form-group">
+              <label for="lightingStyle">Lighting</label>
+              <select id="lightingStyle" class="dynamic-select" data-category="lightingStyle"></select>
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="customTechnicalNotes">Custom Technical Notes</label>
+              <textarea id="customTechnicalNotes" placeholder="Add extra art style, text effects, shadow, camera, or lighting notes"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <span class="section-title">📅 Event Details</span>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="eventDate">Date</label>
+              <input type="text" id="eventDate" placeholder="e.g., Saturday, June 15th">
+            </div>
+            <div class="form-group">
+              <label for="eventTime">Time</label>
+              <input type="text" id="eventTime" placeholder="e.g., 6:00 PM">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="eventLocation">Location</label>
+              <input type="text" id="eventLocation" placeholder="e.g., The Grand Ballroom, Downtown">
+            </div>
+            <div class="form-group">
+              <label for="eventRSVP">RSVP</label>
+              <input type="text" id="eventRSVP" placeholder="e.g., By June 1st">
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="dressCode">Dress Code (Optional)</label>
+              <input type="text" id="dressCode" placeholder="e.g., Cocktail attire">
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <span class="section-title">✨ Extra Details</span>
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="extraDetails">Add Any Extra Details</label>
+              <textarea id="extraDetails" placeholder="e.g., Include disco ball, add photographer watermark, make it look professional like a magazine cover"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button type="button" class="btn btn-copy" id="clearAllBtn">Clear All</button>
+          <button type="button" class="btn btn-random" id="randomBtn">🎲 Random</button>
+          <button type="submit" class="btn btn-primary">✨ Generate Prompt</button>
+        </div>
+      </form>
+
+      <div class="output-section">
+        <div class="output-title">
+          <span>🎯 Your Prompt</span>
+          <button type="button" class="btn btn-copy" id="copyBtn" style="display:none;">Copy</button>
+        </div>
+        <div class="output-box" id="outputBox"><span class="output-empty">Your generated prompt will appear here...</span></div>
+        <div class="info-message" id="infoMessage" style="display:none;">
+          ✓ Prompt copied to clipboard! Ready to paste into your AI image generator.
+        </div>
+      </div>
+
+      <div class="output-section">
+        <div class="output-title">
+          <span>🤖 Custom GPT Instructions</span>
+          <button type="button" class="btn btn-copy" id="instructionsCopyBtn" style="display:none;">Copy Instructions</button>
+        </div>
+        <div class="output-box" id="instructionsOutputBox"><span class="output-empty">Your Custom GPT instructions will appear here...</span></div>
+      </div>
+
+      <div class="output-section">
+        <div class="output-title">
+          <span>💬 Starter Questions</span>
+          <button type="button" class="btn btn-copy" id="starterQuestionsCopyBtn" style="display:none;">Copy Starter Questions</button>
+        </div>
+        <div class="output-box" id="starterQuestionsOutputBox"><span class="output-empty">Your starter questions will appear here...</span></div>
+      </div>
+
+      <div class="output-section">
+        <div class="output-title">
+          <span>📚 Knowledge</span>
+          <button type="button" class="btn btn-copy" id="knowledgeCopyBtn" style="display:none;">Copy Knowledge</button>
+        </div>
+        <div class="output-box" id="knowledgeOutputBox"><span class="output-empty">Your knowledge section will appear here...</span></div>
+      </div>
+
+      <div class="output-section">
+        <div class="output-title">
+          <span>🎬 8-Second Video Prompt Script</span>
+          <button type="button" class="btn btn-copy" id="videoScriptCopyBtn" style="display:none;">Copy Video Script</button>
+        </div>
+        <div class="output-box" id="videoScriptOutputBox"><span class="output-empty">Your 8-second video prompt script will appear here...</span></div>
+      </div>
+
+      <div class="output-section">
+        <div class="output-title">
+          <span>🎵 Suno Jingle Prompt</span>
+          <button type="button" class="btn btn-copy" id="sunoJingleCopyBtn" style="display:none;">Copy Jingle Prompt</button>
+        </div>
+        <div class="output-box" id="sunoJingleOutputBox"><span class="output-empty">Your Suno jingle prompt will appear here...</span></div>
+      </div>
+
+      <div class="output-section">
+        <div class="output-title">
+          <span>🎶 Suno 30-Second Song Prompt</span>
+          <button type="button" class="btn btn-copy" id="sunoShortCopyBtn" style="display:none;">Copy 30s Song Prompt</button>
+        </div>
+        <div class="output-box" id="sunoShortOutputBox"><span class="output-empty">Your 30-second Suno song prompt will appear here...</span></div>
+      </div>
+
+      <div class="output-section">
+        <div class="output-title">
+          <span>🎼 Suno 1-Minute Song Prompt</span>
+          <button type="button" class="btn btn-copy" id="sunoLongCopyBtn" style="display:none;">Copy 1-Min Song Prompt</button>
+        </div>
+        <div class="output-box" id="sunoLongOutputBox"><span class="output-empty">Your 1-minute Suno song prompt will appear here...</span></div>
+      </div>
+
+      <div class="output-section">
+        <div class="output-title">
+          <span>🎚️ Suno Influence Suggestions</span>
+          <button type="button" class="btn btn-copy" id="sunoInfluenceCopyBtn" style="display:none;">Copy Influence Settings</button>
+        </div>
+        <div class="output-box" id="sunoInfluenceOutputBox"><span class="output-empty">Your Suno influence suggestions will appear here...</span></div>
+      </div>
+
+      <div class="output-section">
+        <div class="output-title">
+          <span>📝 Suno Lyrics Under 1000 Characters</span>
+          <button type="button" class="btn btn-copy" id="sunoLyricsCopyBtn" style="display:none;">Copy Lyrics</button>
+        </div>
+        <div class="output-box" id="sunoLyricsOutputBox"><span class="output-empty">Your Suno lyrics will appear here...</span></div>
+      </div>
+
+      <div class="output-section">
+        <div class="output-title">
+          <span>📣 Captions + Marketing Suite</span>
+          <button type="button" class="btn btn-copy" id="marketingCopyBtn" style="display:none;">Copy Marketing Suite</button>
+        </div>
+        <div class="output-box" id="marketingOutputBox"><span class="output-empty">Your marketing suite will appear here...</span></div>
+      </div>
+    </div>
+    <div class="site-footer">all rights reserved by glamorousgrammyglowup</div>
+  </div>
+
+
+<script>
+const ageGroupKeys = {
+  "Kids (1–10)": "kids",
+  "Tween (11–12)": "tween",
+  "Teen (13–19)": "teen",
+  "Adult (20–49)": "adult",
+  "Milestone (50+)": "milestone"
+};
+
+const ageGroupLabels = {
+  kids: "Kids (1–10)",
+  tween: "Tween (11–12)",
+  teen: "Teen (13–19)",
+  adult: "Adult (20–49)",
+  milestone: "Milestone (50+)"
+};
+
+const ageGroupedOptionSets = {
+  presetTheme: {
+    kids: ["Animal Safari Party","Barbie Dream Party","Bluey Birthday Bash","Dinosaur Explorer","Lego Block Party","Mickey Fun Party","Princess Tea Party","Teddy Bear Picnic"],
+    tween: ["Aesthetic Sleepover","Dance Party Glow","Hello Kitty Celebration","Kawaii Candy Bash","Mermaid Splash Party","Preppy Pink Party","Spa Day Birthday","TikTok Trend Party"],
+    teen: ["Bold Selfie Bash","Coquette Birthday","Fashion It-Girl Party","Glow Night Bash","Sneaker Ball Energy","Streetwear Birthday Bash","Sweet Sixteen Luxe","Y2K Birthday Flash"],
+    adult: ["Black and Gold Luxe","Casino Night Glam","Cowgirl Birthday Bash","Hollywood Glam Party","Pretty in Pink Glam","Rooftop Birthday Bash","Streetwear Birthday Drip","White Party Elegance"],
+    milestone: ["Champagne Legacy Dinner","Elegant Floral Celebration","Golden Milestone Soiree","Grown and Glam","Luxury Birthday Toast","Pearl Celebration Night","Signature Birthday Affair","Timeless Glam Gathering"]
+  },
+  theme: {
+    kids: ["animal party fun","barbie pink","cartoon birthday magic","cute teddy bear party","dinosaur jungle","lego block fun","princess glam","superhero boys bash"],
+    tween: ["butterfly glam","candyland dream","glow party","hello-kitty cute","mermaid magic","pastel preppy party","sleepover sparkle","spa glam"],
+    teen: ["coquette glam","fashion birthday drip","gamer neon","glam selfie culture","high school hype","sneaker party","streetwear drip","y2k birthday flash"],
+    adult: ["black and gold luxury","celebrity red carpet","chrome luxury","cowgirl western glam","fashion runway","high-fashion editorial","luxury designer","rooftop glam"],
+    milestone: ["elegant floral","gold legacy glam","grown and sexy chic","pearl elegance","signature dinner glam","soft luxury celebration","timeless glam","vintage luxe" ]
+  },
+  scene: {
+    kids: ["balloon world setup","candyland dreamscape","cartoon play room","fun arcade glow","outdoor party lawn","storybook garden","toyland stage","whimsical birthday set"],
+    tween: ["butterfly wall setup","girly glam lounge","pool party backdrop","pretty sleepover tent","sweet dessert set","trendy pastel studio","vanity glam corner","youth sparkle room"],
+    teen: ["city rooftop vibe","content room set","fashion studio zone","mirror room glow","neon tunnel","recording studio mood","shopping district glow","urban party set"],
+    adult: ["champagne wall setup","designer closet set","high-rise penthouse","luxury party room","moonlit rooftop","old hollywood set","private lounge","VIP velvet room"],
+    milestone: ["ballroom glow","classic dinner scene","elegant foyer","floral photo area","grand staircase set","hotel celebration hall","luxury lobby","timeless portrait scene"]
+  },
+  photoStyle: {
+    kids: ["birthday throne pose","cake-table smile shot","cute full-body party pose","gift-opening pose","storybook portrait","superhero power pose","toy-box pose","wide happy birthday pose"],
+    tween: ["bestie-style birthday pose","cute seated glam pose","mirror selfie-inspired pose","phone-frame portrait","poolside birthday pose","soft sparkle portrait","sleepover lounge pose","treat-table pose"],
+    teen: ["bold centered portrait","fashion runway stance","full-body fashion pose","magazine cover crop","selfie-style glam frame","street-style walking pose","walking candid angle","zoomed-in glam portrait"],
+    adult: ["car-side fashion pose","clean editorial headshot","full-body luxury drip","glam chair sitting pose","leaning wall pose","red carpet arrival shot","step-and-repeat pose","VIP booth portrait"],
+    milestone: ["classic seated portrait","elegant standing portrait","legacy spotlight pose","luxury birthday toast pose","magazine-worthy power pose","soft smiling portrait","timeless side profile","window-light portrait"]
+  },
+  locationStyle: {
+    kids: ["birthday playhouse","candy shop corner","castle party hall","children's event stage","fun arcade zone","kid party studio","storybook garden","toy boutique set"],
+    tween: ["boutique dessert bar","glam bedroom","mall photo corner","mini spa suite","party picnic setup","pool deck party","sleepover tent setup","trendy pastel studio"],
+    teen: ["city rooftop","concert-style stage","content room set","fashion studio","modern loft","neon arcade","recording studio","shopping district"],
+    adult: ["club VIP section","designer closet","downtown rooftop","high-rise penthouse","luxury casino","miami poolside","private jet","rooftop lounge"],
+    milestone: ["ballroom entrance","elegant garden","golden staircase","grand foyer","hotel celebration hall","luxury hallway","marble lobby","signature dinner venue"]
+  },
+  backgroundStyle: {
+    kids: ["balloon garland wall","candy swirl backdrop","cartoon cloud wall","confetti splash backdrop","fairy tale mural","pastel dream wall","rainbow glossy wall","storybook scene wall"],
+    tween: ["butterfly shimmer wall","glitter photo wall","hello-kitty style wall","iridescent pearl sheen","kawaii sparkle backdrop","pink velvet curtain","pool shimmer backdrop","sweet treat backdrop"],
+    teen: ["abstract light trails","city skyline blur","LED light wall","mirror selfie backdrop","neon tube wall","social media collage wall","textured paper wall","urban glow backdrop"],
+    adult: ["black velvet drape","champagne glitter wall","chrome mirrored wall","crystal curtain wall","deep black void","editorial beige set","gold drapery","luxury curtain backdrop"],
+    milestone: ["arched floral wall","diamond sparkle curtain","elegant champagne wall","floral mural","marble luxury wall","pearl celebration backdrop","rose petal backdrop","soft white studio sweep"]
+  },
+  propStyle: {
+    kids: ["balloon bundle","birthday cake","character plush","confetti popper","giant number prop","gift boxes","toy blocks","wand or cape"],
+    tween: ["birthday cupcakes","butterfly wand","gift bags","glam phone prop","lip gloss prop","mini purse","photo booth frame","spa robe accessory"],
+    teen: ["camera prop","fashion magazines","glam mirror","headphones","polaroid stack","shopping bags","sneakers display","sparkler wand"],
+    adult: ["champagne flute","designer bags","diamond jewelry","flower bouquet","luxury cake stand","luxury sunglasses","money fan","sports car keys"],
+    milestone: ["bouquet arrangement","celebration toast glass","elegant gift box","gold fan accessory","legacy photo frame","pearl clutch","statement cake","wineglass glamour"]
+  },
+  decorationStyle: {
+    kids: ["balloon party setup","bright character decor","cartoon sparkle accents","confetti explosion","cute cake-table decor","fun foam letters","pastel party garland","toy-themed setup"],
+    tween: ["aesthetic pastel setup","butterfly party decor","cute glam table styling","girly shimmer accents","kawaii candy decor","pool party styling","sleepover lounge decor","spa birthday styling"],
+    teen: ["content-creator decor","fashion photo-call setup","glow-up styling","neon birthday decor","selfie-wall styling","soft glam decor","street-chic setup","trendy party layers"],
+    adult: ["black-and-gold decor","champagne glam styling","chrome luxe accents","designer-inspired setup","disco birthday styling","editorial party decor","floral luxe styling","VIP celebration decor"],
+    milestone: ["elegant floral styling","gold legacy decor","grand celebration layers","keepsake display styling","pearl-and-gold accents","signature dinner decor","timeless glam setup","vintage luxe details"]
+  }
+};
+
+const ageGroupedGenderOptionSets = {
+  maleOutfit: {
+    kids: ["birthday king tee set","cool varsity set","graphic tee and joggers","mini bomber jacket set","mini denim set","sporty birthday fit"],
+    tween: ["clean hoodie set","cool layered tee fit","denim jacket and joggers","fresh varsity set","graphic tee and stacked jeans","sporty luxe set"],
+    teen: ["designer tee and stacked jeans","fashion hoodie set","monochrome streetwear fit","sleek denim jacket fit","streetwear birthday fit","trend varsity set"],
+    adult: ["bomber jacket and denim","designer tee and stacked jeans","luxury blazer set","monochrome streetwear fit","sharp tuxedo vibe","tailored suit with chain"],
+    milestone: ["classic celebration suit","luxury blazer set","modern gentleman fit","refined monochrome suit","sharp tuxedo vibe","tailored suit with chain"]
+  },
+  femaleOutfit: {
+    kids: ["birthday princess dress","bow-detail party dress","cute tutu glam set","glitter birthday dress","mini sparkle dress","pretty party set"],
+    tween: ["birthday glam set","cute skirt set","girly layered outfit","pretty party dress","soft glam jumpsuit","sparkle birthday fit"],
+    teen: ["bodycon glam fit","coquette birthday fit","corset and skirt set","fashion birthday look","girls-night-out fit","sparkle mini dress"],
+    adult: ["barbie glam dress","bodycon glam fit","corset and skirt set","girls-night-out fit","luxury jumpsuit","sparkle mini dress"],
+    milestone: ["birthday queen gown","elegant celebration dress","glam tailored set","luxury jumpsuit","signature evening gown","timeless satin dress"]
+  },
+  maleShoes: {
+    kids: ["birthday sneakers","chunky play sneakers","clean mini high-tops","cool sporty sneakers","light-up party shoes","mini street sneakers"],
+    tween: ["clean sneakers","cool high-tops","designer-inspired sneakers","fresh sporty runners","mini boots","street sneakers"],
+    teen: ["combat boots","designer sneakers","high-top sneakers","sleek casual sneakers","streetwear runners","trend low-top sneakers"],
+    adult: ["combat boots","designer sneakers","dress loafers","high-top sneakers","leather Chelsea boots","sleek oxfords"],
+    milestone: ["classic loafers","dress loafers","luxury boots","polished monk straps","refined Chelsea boots","sleek oxfords"]
+  },
+  femaleShoes: {
+    kids: ["birthday sparkle flats","bow party shoes","cute glam sandals","glitter sneakers","mini princess heels","pretty dress shoes"],
+    tween: ["birthday sandals","cute platform sneakers","glam flats","mini ankle boots","pretty party heels","sparkle sneakers"],
+    teen: ["ankle-strap heels","combat boots","gladiator heels","knee-high boots","platform heels","statement sneakers"],
+    adult: ["ankle-strap heels","barbie platform heels","crystal pumps","gladiator heels","knee-high boots","stiletto heels"],
+    milestone: ["ankle-strap heels","classic pumps","crystal pumps","elegant slingbacks","satin pumps","soft glam heels"]
+  },
+  maleAccessories: {
+    kids: ["birthday shades","cool chain","mini bow tie","party crown cap","sport watch","star sunglasses"],
+    tween: ["birthday chain","cool shades","fresh watch","mini bracelet stack","sport watch","statement sunglasses"],
+    teen: ["chain necklace","designer shades","ear cuff","leather bracelet","sports watch","statement sunglasses"],
+    adult: ["chain necklace","designer shades","diamond watch","leather bracelet","luxury ring","statement sunglasses"],
+    milestone: ["classic watch","gentleman ring","luxury cuff links","premium watch","refined shades","signature bracelet"]
+  },
+  femaleAccessories: {
+    kids: ["birthday bow headband","cute mini purse","heart sunglasses","pearl bracelet","pretty tiara","sparkle bag"],
+    tween: ["birthday mini purse","butterfly shades","cute bracelet stack","glam sunglasses","pretty jewelry set","sparkle hair bow"],
+    teen: ["designer sunglasses","ear cuffs","mini purse","oversized sunglasses","statement rings","trend jewelry stack"],
+    adult: ["baroque pearl earrings","designer sunglasses","diamond studs","mini purse","oversized sunglasses","statement rings"],
+    milestone: ["baroque pearl earrings","classic pearl set","crystal chandeliers","diamond studs","elegant clutch","signature rings"]
+  }
+};
+
+const optionSets = {
+  flyerSize: ["1080x1080 square flyer","1080x1350 Instagram post","1080x1920 story flyer","11x17 poster layout","16:9 landscape promo","2048x2048 premium square","4x6 mini flyer","5x7 invitation layout","8.5x11 print flyer","A4 portrait design","A5 mini promo","billboard-style vertical layout","digital marquee format","eventbrite banner crop","Facebook event cover","flyer with bleed-safe margins","high-resolution print poster","mobile-first vertical flyer","Pinterest pin format","print postcard front","promotional table topper","Reel cover style","social media carousel cover","sponsor wall display ratio","tabloid portrait poster","ticket-style invitation","VIP pass flyer layout","wall-mounted poster crop","web banner flyer crop","wide-screen promo card","YouTube community post ratio","Zoom virtual invite slide","clean portrait canvas","compact mobile invite","double-sided flyer front focus","editorial magazine cover ratio","email header flyer ratio","festival handbill layout","full-page print ad","luxury invitation card"],
+  colorPalette: ["amber and cream","aqua and coral","black and gold","black and silver","blush and rose gold","blue and silver","bronze and black","burgundy and champagne","candy pink and lilac","champagne and ivory","chrome and black neon","coral and peach","deep purple and gold","dusty blue and white","emerald and rose gold","fuchsia and platinum","gold and white","holographic iridescent","hot pink and black","lavender and silver","lemon and cream","lime green and black","midnight blue and silver","mint and pearl","mocha and nude","navy and platinum","orange and teal","pastel rainbow","peach and gold","pink and white gold","purple and black","red and gold","rose quartz and cream","royal blue and gold","sage and cream","seafoam and coral","silver and white","sunset ombre","teal and gold","turquoise and white"],
+  fogStyle: ["barely-there mist","clean air no fog","cloud puff haze","confetti dust haze","cotton-candy fog","crystal sparkle mist","diamond shimmer fog","dream haze","frosted silver mist","gentle floor fog","glam glow mist","golden dust haze","light luxury mist","moody violet mist","neon haze","opal shimmer fog","pastel cloud haze","pearl shimmer mist","pink glam fog","rose haze","smoky party fog","soft halo fog","soft luxury fog","spotlight mist","star dust haze","subtle glitter mist","sunbeam haze","twilight mist","velvet smoke haze","white glow fog","none"],
+  weatherStyle: ["after-rain glow","aurora sparkle sky","breezy rooftop air","clear skies","cool evening breeze","crisp winter air","festival fireworks sky","golden sunset warmth","light snowfall","misty morning air","moonlit stillness","no visible weather effect","rain shower","rainy city mood","starry night","summer breeze","sunny glow","sunset breeze","twilight glow","warm spring air"],
+  timeOfDay: ["afternoon","blue hour","daybreak","early evening","early morning","golden hour","midday","moonlit evening","nightfall","sunrise","sunset","twilight"],
+  seasonStyle: ["all-season glam","autumn","blooming spring","coastal summer","cool winter","early autumn","end-of-summer glow","festive winter","late autumn","spring bloom","summer","winter holiday"],
+  typography: ["all caps bold","art deco geometric","bold 3D chrome","bubble letters","clean modern sans","diamond sparkle text","distressed vintage","elegant script","fashion magazine bold","futuristic tech font","gradient color text","graffiti","handwritten brush stroke","italic swash letters","metallic shine effect","neon glow sign","outline stroke text","raised letterpress look","retro Y2K","shadow 3D depth","stencil bold text"],
+  textEffects: ["airbrush finish","butterfly sparkle overlay","centered hero text glow","diamond dust overlay","frosted glass text","glitter text glow","gold foil shine","ice crystal texture","mirror chrome finish","raised letterpress look","soft pearl shine","sparkle edge outline"],
+  artStyle: ["3d cartoon luxe","3d glossy realism","cinematic realism","concept art glam","disney-inspired 3d","editorial fantasy realism","fashion magazine realism","fine art glam","glossy character realism","high-fashion realism","hyper-real glossy realism","luxury poster realism","premium portrait realism","street-luxury realism"],
+  shadowStyle: ["ambient soft shadows","bold cast shadows","butter-soft studio shadows","clean studio shadows","crisp directional shadows","deep dramatic shadows","editorial contrast shadows","face-framing shadows","golden shadows","pink glow shadows","rainy reflective shadows","soft halo shadows"],
+  cameraAngle: ["back-turned glance","dynamic editorial tilt","fashion runway angle","full-body straight-on","high-angle shot","low-angle hero shot","magazine cover crop","model test shot","right three-quarter view","street-style candid angle","wide establishing shot"],
+  lightingStyle: ["ambient luxury glow","beauty ring light","butter-soft studio light","camera-flash glam","clean daylight","cool moonlight","dramatic rim light","editorial flash lighting","golden hour glow","jewel-toned lighting","natural window light","neon edge lighting","pink glam lighting","red carpet lighting","side-lit cinematic light","soft cinematic light","sunset warmth","twilight ambient light","warm honey glow"],
+  textPlacement: ["bottom center","bottom left","bottom right","centered","centered at bottom third","centered at top third","centered with event details at bottom","centered with layered text blocks","dead center","diagonal sweep across center","floating center stack","full-center headline with details below","left center","middle left","middle right","name centered and age top center","side panel left text","side panel right text","split layout left text right photo","split layout right text left photo","top center","top left","top right"],
+  skinTone: ["almond","beige","bronze","caramel","chestnut","cocoa","cool beige","deep ebony","espresso","golden brown","honey","ivory","mahogany","mocha","olive","peach beige","rich brown","sable","soft tan","warm chestnut"],
+  eyeColor: ["amber","blue gray","chestnut","dark brown","emerald","golden hazel","gray","green","honey brown","jade","olive green","violet brown"],
+  hairColor: ["ash blonde","auburn","blue-black","burgundy","caramel brown","cherry black","chocolate brown","copper","dark brown","dirty blonde","golden blonde","jet black","natural black","platinum blonde","rose gold brown","silver black"],
+  ornateElements: ["butterfly sparkle accents","candelabra glow","carved marble details","chain details","crystal dust","diamond dust","floating sparkles","glossy balloons","glowing butterflies","gold foil shimmer","jeweled vines","luxury ribbons","mirror shine accents","ornate crown detail","pearl glow accents","rose-petal scatter"],
+  maleHairstyle: ["clean taper fade","cornrow braids","curly top fade","defined waves","drop fade","loc bun","short afro","short twists"],
+  femaleHairstyle: ["body-wave curls","finger waves","french curl braids","high ponytail","knotless braids","loose curls","pixie glam cut","silky straight"],
+  maleOutfit: ["bomber jacket and denim","designer tee and stacked jeans","fresh varsity set","luxury blazer set","monochrome streetwear fit","sharp tuxedo vibe","tailored suit with chain","tracksuit luxe"],
+  femaleOutfit: ["barbie glam dress","birthday queen gown","bodycon glam fit","corset and skirt set","girls-night-out fit","luxury jumpsuit","ruched skirt set","sparkle mini dress"],
+  maleShoes: ["combat boots","designer sneakers","dress loafers","high-top sneakers","leather Chelsea boots","luxury boots","sleek oxfords","streetwear runners"],
+  femaleShoes: ["ankle-strap heels","barbie platform heels","combat boots","crystal pumps","gladiator heels","knee-high boots","satin pumps","stiletto heels"],
+  maleAccessories: ["chain necklace","designer shades","diamond watch","ear cuff","leather bracelet","luxury ring","sports watch","statement sunglasses"],
+  femaleAccessories: ["baroque pearl earrings","crystal chandeliers","designer sunglasses","diamond studs","ear cuffs","mini purse","oversized sunglasses","statement rings"],
+  lashes: ["bare lashes","bold glam lashes","feathered lashes","manga lashes","soft wispy lashes","siren lashes","stacked volume lashes","voluminous lashes"],
+  makeup: ["barbie glam","clean soft glam","glitter glam","gold shimmer lids","lavender glam","natural beat","smoky eye","vintage glam"],
+  hairGems: ["cluster gems","crystal pins","gem-lined part","holographic gems","none","pearl clips","silver beads","vintage brooch clip"],
+  eyebrows: ["defined brows","dramatic brows","glossed brows","high arch brows","laminated brows","rounded brows","soft feathered shaping","statement brows"],
+  nails: ["barbie pink nails","cherry red nails","chocolate brown nails","emerald chrome nails","french tip glam nails","glossy nude nails","metallic silver nails","mirror chrome nails"],
+  earrings: ["baroque pearl earrings","crystal chandeliers","diamond drops","diamond studs","ear cuffs","gem hoops","pearl studs","statement earrings"],
+  hairEdges: ["crisscross edges","glam swoop edges","laid edges","none","precision baby hairs","soft wave edges","statement edges","vintage wave edges"]
+};
+
+const genderControlledIds = ['femaleFields','maleFields'];
+const femaleOnlyFieldIds = ['femaleHairstyle','femaleOutfit','femaleShoes','femaleAccessories','lashes','makeup','hairGems','eyebrows','nails','earrings','hairEdges'];
+const maleOnlyFieldIds = ['maleHairstyle','maleOutfit','maleShoes','maleAccessories'];
+const checkboxFemaleOnlyIds = ['prop-crown'];
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch]);
+}
+function withNoneAndAlphabetized(arr) {
+  const clean = Array.from(new Set(arr.map(v => String(v).trim()).filter(Boolean)));
+  clean.sort((a,b)=>a.localeCompare(b));
+  if (!clean.includes('None')) clean.unshift('None');
+  else clean.sort((a,b)=>a.localeCompare(b));
+  return ['None', ...clean.filter(v => v !== 'None')];
+}
+function setSelectOptions(selectId, values) {
+  const select = document.getElementById(selectId);
+  if (!select) return;
+  const options = withNoneAndAlphabetized(values || []);
+  select.innerHTML = options.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+}
+function getOrderedAgeGroups() {
+  const selectedKey = ageGroupKeys[document.getElementById('ageGroup')?.value] || '';
+  const all = ['kids','tween','teen','adult','milestone'];
+  return selectedKey ? [selectedKey, ...all.filter(k => k !== selectedKey)] : all;
+}
+function populateAgeGroupedSelect(selectId, categoryKey) {
+  const select = document.getElementById(selectId);
+  const config = ageGroupedOptionSets[categoryKey];
+  if (!select || !config) return;
+  let html = '<option value="None">None</option>';
+  getOrderedAgeGroups().forEach(groupKey => {
+    const values = withNoneAndAlphabetized(config[groupKey] || []).filter(v => v !== 'None');
+    html += `<optgroup label="${escapeHtml(ageGroupLabels[groupKey])}">`;
+    html += values.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+    html += '</optgroup>';
+  });
+  select.innerHTML = html;
+}
+function populateDynamicSelects() {
+  const grouped = new Set(['theme','scene','photoStyle','locationStyle','backgroundStyle','propStyle','decorationStyle','presetTheme']);
+  document.querySelectorAll('.dynamic-select').forEach(select => {
+    const key = select.dataset.category;
+    if (grouped.has(key)) return populateAgeGroupedSelect(select.id, key);
+    const values = optionSets[key] || [];
+    const options = withNoneAndAlphabetized(values);
+    if (key === 'textPlacement') {
+      const rest = options.filter(v => !['None','centered'].includes(v));
+      select.innerHTML = ['<option value="None">None</option>','<option value="centered">centered</option>',...rest.map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`)].join('');
+    } else {
+      select.innerHTML = options.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+    }
+  });
+}
+function populateGenderedAgeGroupedSelect(selectId, categoryKey) {
+  const select = document.getElementById(selectId);
+  const config = ageGroupedGenderOptionSets[categoryKey];
+  if (!select || !config) return;
+  let html = '<option value="None">None</option>';
+  getOrderedAgeGroups().forEach(groupKey => {
+    const values = withNoneAndAlphabetized(config[groupKey] || []).filter(v => v !== 'None');
+    html += `<optgroup label="${escapeHtml(ageGroupLabels[groupKey])}">`;
+    html += values.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+    html += '</optgroup>';
+  });
+  select.innerHTML = html;
+}
+function populateGenderedSelects() {
+  ['maleHairstyle','femaleHairstyle','lashes','makeup','hairGems','eyebrows','nails','earrings','hairEdges'].forEach(id => setSelectOptions(id, optionSets[id] || []));
+  ['maleOutfit','femaleOutfit','maleShoes','femaleShoes','maleAccessories','femaleAccessories'].forEach(id => populateGenderedAgeGroupedSelect(id, id));
+}
+
+const form = document.getElementById('generatorForm');
+const outputBox = document.getElementById('outputBox');
+const copyBtn = document.getElementById('copyBtn');
+const infoMessage = document.getElementById('infoMessage');
+const scrollUpBtn = document.getElementById('scrollUpBtn');
+const scrollDownBtn = document.getElementById('scrollDownBtn');
+const scrollContainer = document.querySelector('.content');
+
+const randomBtn = document.getElementById('randomBtn');
+const clearAllBtn = document.getElementById('clearAllBtn');
+const instructionsOutputBox = document.getElementById('instructionsOutputBox');
+const starterQuestionsOutputBox = document.getElementById('starterQuestionsOutputBox');
+const knowledgeOutputBox = document.getElementById('knowledgeOutputBox');
+const videoScriptOutputBox = document.getElementById('videoScriptOutputBox');
+const sunoJingleOutputBox = document.getElementById('sunoJingleOutputBox');
+const sunoShortOutputBox = document.getElementById('sunoShortOutputBox');
+const sunoLongOutputBox = document.getElementById('sunoLongOutputBox');
+const sunoInfluenceOutputBox = document.getElementById('sunoInfluenceOutputBox');
+const sunoLyricsOutputBox = document.getElementById('sunoLyricsOutputBox');
+const marketingOutputBox = document.getElementById('marketingOutputBox');
+const instructionsCopyBtn = document.getElementById('instructionsCopyBtn');
+const starterQuestionsCopyBtn = document.getElementById('starterQuestionsCopyBtn');
+const knowledgeCopyBtn = document.getElementById('knowledgeCopyBtn');
+const videoScriptCopyBtn = document.getElementById('videoScriptCopyBtn');
+const sunoJingleCopyBtn = document.getElementById('sunoJingleCopyBtn');
+const sunoShortCopyBtn = document.getElementById('sunoShortCopyBtn');
+const sunoLongCopyBtn = document.getElementById('sunoLongCopyBtn');
+const sunoInfluenceCopyBtn = document.getElementById('sunoInfluenceCopyBtn');
+const sunoLyricsCopyBtn = document.getElementById('sunoLyricsCopyBtn');
+const marketingCopyBtn = document.getElementById('marketingCopyBtn');
+const ageGroupSelect = document.getElementById('ageGroup');
+const genderSelect = document.getElementById('gender');
+const propAlcoholItem = document.getElementById('prop-alcohol-item');
+const photoStyleSelect = document.getElementById('photoStyle');
+const photoNotesRow = document.getElementById('photoNotesRow');
+const lockedFields = new Set();
+
+function isLocked(id) { return lockedFields.has(id); }
+function syncLockButton(button, locked) {
+  button.classList.toggle('locked', locked);
+  button.textContent = locked ? '🔒 Locked' : '🔓 Lock';
+  button.setAttribute('aria-pressed', locked ? 'true' : 'false');
+}
+function addLockButtons() {
+  let lockIndex = 0;
+  document.querySelectorAll('.form-group').forEach(group => {
+    const label = group.querySelector(':scope > label');
+    if (!label) return;
+    let target = group.querySelector(':scope > select, :scope > input, :scope > textarea, :scope > .checkbox-group');
+    if (!target) return;
+    const lockId = target.id || group.dataset.lockId || `lock-group-${++lockIndex}`;
+    group.dataset.lockId = lockId;
+    if (!label.parentElement.classList.contains('label-row')) {
+      const row = document.createElement('div');
+      row.className = 'label-row';
+      label.parentNode.insertBefore(row, label);
+      row.appendChild(label);
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'lock-btn';
+      button.dataset.lockTarget = lockId;
+      syncLockButton(button, false);
+      button.addEventListener('click', () => {
+        const currentlyLocked = isLocked(lockId);
+        if (currentlyLocked) lockedFields.delete(lockId); else lockedFields.add(lockId);
+        syncLockButton(button, !currentlyLocked);
+      });
+      row.appendChild(button);
+    }
+  });
+}
+
+function clearValues(ids) {
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el || isLocked(id)) return;
+    if (el.tagName === 'SELECT') el.value = 'None';
+  });
+}
+function currentGenderType() {
+  const value = genderSelect.value;
+  if (value === 'Boy' || value === 'Man') return 'male';
+  if (value === 'Girl' || value === 'Woman') return 'female';
+  return 'neutral';
+}
+function updateGenderVisibility() {
+  const type = currentGenderType();
+  const showMale = type === 'male';
+  const showFemale = type === 'female';
+  document.getElementById('maleFields').classList.toggle('hidden-by-gender', !showMale);
+  document.getElementById('femaleFields').classList.toggle('hidden-by-gender', !showFemale);
+  if (showMale) clearValues(femaleOnlyFieldIds);
+  if (showFemale) clearValues(maleOnlyFieldIds);
+  checkboxFemaleOnlyIds.forEach(id => {
+    const item = document.getElementById(id)?.closest('.checkbox-item');
+    if (!item) return;
+    item.classList.toggle('hidden-by-gender', showMale);
+    if (showMale) document.getElementById(id).checked = false;
+  });
+}
+function updateAgeBehavior() {
+  const isAdult = ['Adult (20–49)','Milestone (50+)'].includes(ageGroupSelect.value);
+  propAlcoholItem.style.display = isAdult ? 'flex' : 'none';
+  if (!isAdult) document.getElementById('prop-alcohol').checked = false;
+  if (!genderSelect.value || (isAdult && ['Boy','Girl'].includes(genderSelect.value)) || (!isAdult && ['Man','Woman'].includes(genderSelect.value))) {
+    genderSelect.value = isAdult ? 'Woman' : 'Girl';
+  }
+  populateDynamicSelects();
+  populateGenderedSelects();
+  updateGenderVisibility();
+}
+const randomHistory = new Map();
+const RANDOM_HISTORY_LIMIT = 500;
+
+function sample(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function getHistoryKey(key, ageKey, genderType) {
+  return `${key}::${ageKey || 'all'}::${genderType || 'all'}`;
+}
+
+function chooseNonRepeating(key, values, ageKey, genderType) {
+  const pool = (values || []).filter(Boolean);
+  if (!pool.length) return '';
+  const historyKey = getHistoryKey(key, ageKey, genderType);
+  const history = randomHistory.get(historyKey) || [];
+  let candidates = pool.filter(value => !history.includes(value));
+  if (!candidates.length) {
+    history.length = 0;
+    candidates = [...pool];
+  }
+  const choice = sample(candidates);
+  history.push(choice);
+  if (history.length > RANDOM_HISTORY_LIMIT) history.splice(0, history.length - RANDOM_HISTORY_LIMIT);
+  randomHistory.set(historyKey, history);
+  return choice;
+}
+
+function chooseValues(values, genderType) {
+  const arr = (values || []).filter(Boolean);
+  if (!arr.length) return arr;
+  if (genderType === 'male') {
+    const excluded = ['barbie','princess','butterfly','spa','mermaid','hello-kitty','girly','pearl'];
+    const filtered = arr.filter(v => !excluded.some(k => v.toLowerCase().includes(k)));
+    return filtered.length ? filtered : arr;
+  }
+  if (genderType === 'female') {
+    const excluded = ['superhero boys','lego','streetwear birthday bash'];
+    const filtered = arr.filter(v => !excluded.some(k => v.toLowerCase().includes(k)));
+    return filtered.length ? filtered : arr;
+  }
+  return arr;
+}
+function setRandomValue(id, values, ageKey, genderType) {
+  const el = document.getElementById(id);
+  if (!el || !values?.length || isLocked(id)) return;
+  el.value = chooseNonRepeating(id, values, ageKey, genderType);
+}
+function randomizeCheckboxes(isAdult, genderType, ageKey) {
+  const checkboxGroup = document.querySelector('.checkbox-group');
+  const checkboxLockId = checkboxGroup ? (checkboxGroup.id || checkboxGroup.closest('.form-group')?.dataset.lockId || '') : '';
+  if (checkboxLockId && isLocked(checkboxLockId)) return;
+  const allBoxes = Array.from(document.querySelectorAll('.checkbox-item input[type="checkbox"]'));
+  allBoxes.forEach(box => box.checked = false);
+  let pool = ['prop-balloons','prop-confetti','prop-sparkles','prop-sports','prop-controller','prop-teddy','prop-roses','prop-fireworks','prop-flowers','prop-balloons-gold','prop-feathers','prop-lights','prop-silk','prop-rainbow'];
+  if (genderType === 'female') pool.push('prop-crown','prop-jewelry');
+  if (genderType === 'male') pool.push('prop-watch');
+  if (isAdult) pool.push('prop-designer-bags','prop-sunglasses','prop-jewelry','prop-watch','prop-cash','prop-alcohol');
+  const uniquePool = [...new Set(pool)].filter(id => {
+    const box = document.getElementById(id);
+    return box && !box.closest('.hidden-by-gender');
+  });
+  const picks = Math.min(3, uniquePool.length);
+  const chosen = [];
+  for (let i = 0; i < picks; i++) {
+    const remaining = uniquePool.filter(id => !chosen.includes(id));
+    const next = chooseNonRepeating(`checkbox-${i}`, remaining, ageKey, genderType);
+    if (next) chosen.push(next);
+  }
+  chosen.forEach(id => {
+    const box = document.getElementById(id);
+    if (box) box.checked = true;
+  });
+}
+function randomizeForm() {
+  const ageValues = ['Kids (1–10)','Tween (11–12)','Teen (13–19)','Adult (20–49)','Milestone (50+)'];
+  if (!ageGroupSelect.value && !isLocked('ageGroup')) ageGroupSelect.value = sample(ageValues);
+  updateAgeBehavior();
+  const isAdult = ['Adult (20–49)','Milestone (50+)'].includes(ageGroupSelect.value);
+  const allowedGenders = isAdult ? ['Man','Woman'] : ['Boy','Girl'];
+  if (!isLocked('gender')) genderSelect.value = sample(allowedGenders);
+  updateGenderVisibility();
+  const ageKey = ageGroupKeys[ageGroupSelect.value] || 'kids';
+  const genderType = currentGenderType();
+  setRandomValue('presetTheme', chooseValues(ageGroupedOptionSets.presetTheme[ageKey], genderType), ageKey, genderType);
+  setRandomValue('theme', chooseValues(ageGroupedOptionSets.theme[ageKey], genderType), ageKey, genderType);
+  setRandomValue('scene', chooseValues(ageGroupedOptionSets.scene[ageKey], genderType), ageKey, genderType);
+  setRandomValue('photoStyle', chooseValues(ageGroupedOptionSets.photoStyle[ageKey], genderType), ageKey, genderType);
+  setRandomValue('locationStyle', chooseValues(ageGroupedOptionSets.locationStyle[ageKey], genderType), ageKey, genderType);
+  setRandomValue('backgroundStyle', chooseValues(ageGroupedOptionSets.backgroundStyle[ageKey], genderType), ageKey, genderType);
+  setRandomValue('propStyle', chooseValues(ageGroupedOptionSets.propStyle[ageKey], genderType), ageKey, genderType);
+  setRandomValue('decorationStyle', chooseValues(ageGroupedOptionSets.decorationStyle[ageKey], genderType), ageKey, genderType);
+  ['flyerSize','colorPalette','fogStyle','weatherStyle','timeOfDay','seasonStyle','typography','textEffects','artStyle','shadowStyle','cameraAngle','lightingStyle','textPlacement','skinTone','eyeColor','hairColor','ornateElements'].forEach(id => setRandomValue(id, withNoneAndAlphabetized(optionSets[id]).filter(v => v !== 'None'), ageKey, genderType));
+  if (genderType === 'male') {
+    setRandomValue('maleHairstyle', withNoneAndAlphabetized(optionSets.maleHairstyle).filter(v => v !== 'None'), ageKey, genderType);
+    ['maleOutfit','maleShoes','maleAccessories'].forEach(id => setRandomValue(id, withNoneAndAlphabetized((ageGroupedGenderOptionSets[id] || {})[ageKey] || []).filter(v => v !== 'None'), ageKey, genderType));
+    clearValues(femaleOnlyFieldIds);
+  } else if (genderType === 'female') {
+    setRandomValue('femaleHairstyle', withNoneAndAlphabetized(optionSets.femaleHairstyle).filter(v => v !== 'None'), ageKey, genderType);
+    ['femaleOutfit','femaleShoes','femaleAccessories'].forEach(id => setRandomValue(id, withNoneAndAlphabetized((ageGroupedGenderOptionSets[id] || {})[ageKey] || []).filter(v => v !== 'None'), ageKey, genderType));
+    ['lashes','makeup','hairGems','eyebrows','nails','earrings','hairEdges'].forEach(id => setRandomValue(id, withNoneAndAlphabetized(optionSets[id]).filter(v => v !== 'None'), ageKey, genderType));
+    clearValues(maleOnlyFieldIds);
+  }
+  randomizeCheckboxes(isAdult, genderType, ageKey);
+}
+
+function getVal(id) {
+  const el = document.getElementById(id);
+  if (!el) return '';
+  const value = el.value ? el.value.trim() : '';
+  return value && value !== 'None' ? value : '';
+}
+
+populateDynamicSelects();
+populateGenderedSelects();
+addLockButtons();
+updateAgeBehavior();
+
+ageGroupSelect.addEventListener('change', updateAgeBehavior);
+genderSelect.addEventListener('change', updateGenderVisibility);
+photoStyleSelect.addEventListener('change', () => {
+  const isTextOnly = photoStyleSelect.value === 'no photo text-only flyer';
+  photoNotesRow.style.display = isTextOnly ? 'none' : 'grid';
+});
+randomBtn.addEventListener('click', randomizeForm);
+if (clearAllBtn) {
+  clearAllBtn.addEventListener('click', () => {
+    form.reset();
+    lockedFields.clear();
+    document.querySelectorAll('.lock-btn').forEach(button => syncLockButton(button, false));
+    outputBox.innerHTML = '<span class="output-empty">Your generated prompt will appear here...</span>';
+    outputBox.classList.add('output-empty');
+    copyBtn.style.display = 'none';
+    infoMessage.style.display = 'none';
+    copyBtn.classList.remove('copied');
+    copyBtn.textContent = 'Copy';
+    instructionsOutputBox.innerHTML = '<span class="output-empty">Your Custom GPT instructions will appear here...</span>';
+    starterQuestionsOutputBox.innerHTML = '<span class="output-empty">Your starter questions will appear here...</span>';
+    knowledgeOutputBox.innerHTML = '<span class="output-empty">Your knowledge section will appear here...</span>';
+    videoScriptOutputBox.innerHTML = '<span class="output-empty">Your 8-second video prompt script will appear here...</span>';
+    sunoJingleOutputBox.innerHTML = '<span class="output-empty">Your Suno jingle prompt will appear here...</span>';
+    sunoShortOutputBox.innerHTML = '<span class="output-empty">Your 30-second Suno song prompt will appear here...</span>';
+    sunoLongOutputBox.innerHTML = '<span class="output-empty">Your 1-minute Suno song prompt will appear here...</span>';
+    sunoInfluenceOutputBox.innerHTML = '<span class="output-empty">Your Suno influence suggestions will appear here...</span>';
+    sunoLyricsOutputBox.innerHTML = '<span class="output-empty">Your Suno lyrics will appear here...</span>';
+    marketingOutputBox.innerHTML = '<span class="output-empty">Your marketing suite will appear here...</span>';
+    instructionsCopyBtn.style.display = 'none';
+    starterQuestionsCopyBtn.style.display = 'none';
+    knowledgeCopyBtn.style.display = 'none';
+    videoScriptCopyBtn.style.display = 'none';
+    sunoJingleCopyBtn.style.display = 'none';
+    sunoShortCopyBtn.style.display = 'none';
+    sunoLongCopyBtn.style.display = 'none';
+    sunoInfluenceCopyBtn.style.display = 'none';
+    sunoLyricsCopyBtn.style.display = 'none';
+    marketingCopyBtn.style.display = 'none';
+    propAlcoholItem.style.display = 'none';
+    const alcoholBox = document.getElementById('prop-alcohol');
+    if (alcoholBox) alcoholBox.checked = false;
+    photoNotesRow.style.display = 'grid';
+    populateDynamicSelects();
+    populateGenderedSelects();
+    updateGenderVisibility();
+    if (scrollContainer) scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
+
+function scrollPanel(direction) {
+  if (!scrollContainer) return;
+  const amount = Math.max(240, Math.floor(scrollContainer.clientHeight * 0.7));
+  scrollContainer.scrollBy({ top: direction * amount, behavior: 'smooth' });
+}
+
+if (scrollUpBtn) {
+  scrollUpBtn.addEventListener('click', () => scrollPanel(-1));
+}
+if (scrollDownBtn) {
+  scrollDownBtn.addEventListener('click', () => scrollPanel(1));
+}
+form.addEventListener('submit', (e) => { e.preventDefault(); generatePrompt(); });
+
+function setOutputBox(box, button, text, placeholder) {
+  if (!box || !button) return;
+  if (text && text.trim()) {
+    box.textContent = text;
+    box.classList.remove('output-empty');
+    button.style.display = 'block';
+  } else {
+    box.innerHTML = `<span class="output-empty">${placeholder}</span>`;
+    box.classList.add('output-empty');
+    button.style.display = 'none';
+  }
+}
+
+function buildCustomGPTOutputs() {
+  const instructions = `Name: Birthday Flyer Prompt Generator Guide
+
+Description:
+This Custom GPT helps users build polished birthday flyer prompts with a structured generator that supports age-group styling, gender-safe character options, scene design, typography, decor direction, event details, and premium image prompt assembly.
+
+Instructions:
+You are a prompt-building assistant for a birthday flyer generator. Your job is to help the user fill out the generator clearly and turn their choices into a clean, premium AI image prompt.
+
+Purpose:
+- Help users create birthday flyer prompts that feel premium, readable, celebration-ready, and visually cohesive.
+- Keep the prompt focused on flyer design, character styling, event details, and art direction.
+- Default the prompt to start with: "Using the uploaded image as reference..."
+
+How the generator is organized:
+1. Person Details
+   - Age Group
+   - Gender
+   - Exact Age
+   - Birthday Person's Name
+
+2. Flyer Specifications
+   - Preset Theme
+   - Flyer Size
+   - Theme / Vibe
+   - Text Placement
+   - Custom Flyer Specs
+
+3. Color Palette
+   - Color Palette
+   - Custom Color Notes
+
+4. Scene & Photo Style
+   - Scene Style
+   - Main Photo Style
+   - Location
+   - Background
+   - Fog
+   - Weather
+   - Time of Day
+   - Season
+   - Custom Scene Notes
+
+5. Character Styling
+   - Skin Tone
+   - Eye Color
+   - Hair Color
+   - Gender-locked hairstyles
+   - Gender-locked outfits
+   - Gender-locked shoes
+   - Gender-locked accessories
+   - Female-only fields when applicable:
+     lashes, makeup, hair gems, eyebrows, nails, earrings, hair edges
+   - Ornate Elements
+   - Custom Character Notes
+
+6. Props & Decorations
+   - Primary Prop
+   - Decoration Style
+   - Checkbox props and decor extras
+   - Custom Decor Notes
+
+7. Typography
+   - Typography Style
+   - Text Effects
+   - Custom Typography Notes
+
+8. Technical Direction
+   - Art Style
+   - Shadow Style
+   - Camera Angle
+   - Lighting
+   - Custom Technical Notes
+
+9. Event Details
+   - Date
+   - Time
+   - Location
+   - RSVP
+   - Dress Code
+
+10. Extra Details
+   - Any additional instructions the user wants on the flyer
+
+Dropdown and custom field rules:
+- Most dropdowns begin with None.
+- Age-grouped dropdowns should stay appropriate for Kids, Tween, Teen, Adult, or Milestone.
+- Gender-locked dropdowns should not cross over.
+- Male selections stay masculine.
+- Female selections stay feminine.
+- Custom text boxes are used to add details without breaking the generator structure.
+
+Prompt assembly logic:
+- Start with the uploaded image reference line.
+- Build the flyer prompt in sections:
+  flyer format, preset theme, vibe, color palette, scene, location, background, atmosphere, time, season, layout, person direction, character styling, age highlight, name text, text placement, decor direction, art style, shadow, camera, lighting, event details, and extra notes.
+- Keep the wording direct and image-generator friendly.
+- Include readable text placement guidance for flyer text.
+- Include premium finish language such as hyper-realistic, glossy, ultra-detailed 8K character.
+- End with a cohesion line that reinforces premium quality, balance, and celebration-ready design.
+
+Behavior rules for the GPT:
+- Ask for missing details only when needed.
+- Suggest age-appropriate and gender-safe options.
+- Never mix male-only and female-only styling fields.
+- Keep flyer text readable and placement-aware.
+- Keep outputs visually strong, premium, and easy to paste into an image tool.
+- When the user feels overwhelmed, guide them section by section.`;
+
+  const starterQuestions = `1. Help me build a kids birthday flyer prompt with a Barbie preset, pink colors, and a cake-table pose.
+2. Build me a milestone birthday flyer prompt using a glamorous uploaded photo, gold tones, and a grand staircase set.
+3. Suggest age-appropriate scene, prop, outfit, and text style options for a teen birthday flyer.
+4. Turn my choices into a full premium flyer prompt with readable event text and centered name placement.`;
+
+  const knowledge = `Knowledge:
+- This generator is for premium birthday flyer prompts.
+- It uses structured dropdowns, custom text fields, and gender-lock logic to keep outputs clean.
+- Core use case: helping users create print-ready or social-ready birthday flyer image prompts.
+- The generator supports age-specific presets for Kids, Tween, Teen, Adult, and Milestone.
+- The prompt should usually begin with: "Using the uploaded image as reference..."
+- Text handling matters. The GPT should preserve readable flyer text, age number emphasis, name emphasis, and text placement direction.
+- Character direction can include skin tone, eye color, hair color, hairstyle, outfits, shoes, accessories, ornate details, and female-only beauty fields when relevant.
+- Scene direction can include theme, palette, location, background, fog, weather, time of day, season, and main photo style.
+- Decor direction can include a primary prop, decoration style, and multiple checked props.
+- Technical direction can include art style, text effects, shadow, camera angle, and lighting.
+- Intended visual finish: hyper-realistic, glossy, ultra-detailed 8K character styling with premium polish.
+- The GPT should keep the final prompt cohesive, visually balanced, celebration-ready, and premium.`;
+
+  return { instructions, starterQuestions, knowledge };
+}
+
+
+function buildCreativeMarketingOutputs(context) {
+  const name = context.customName || 'the birthday star';
+  const age = context.exactAge || 'birthday';
+  const preset = context.presetTheme || context.theme || 'birthday glam';
+  const audience = `${context.ageGroup || 'birthday'} ${context.gender || 'celebration'}`.trim();
+  const palette = context.colorPalette || 'premium party colors';
+  const visualMood = [context.scene, context.photoStyle, context.artStyle, context.lightingStyle].filter(Boolean).join(', ');
+  const eventLine = [context.eventDate && `Date: ${context.eventDate}`, context.eventTime && `Time: ${context.eventTime}`, context.eventLocation && `Location: ${context.eventLocation}`].filter(Boolean).join(' | ');
+  const shortHandle = (context.customName || 'BirthdayFlyer').replace(/[^a-z0-9]/gi, '');
+  const voiceoverHook = `${name} is stepping into ${age} in full ${preset.toLowerCase()} energy.`;
+  const videoScript = `Create an 8-second promo video script for this birthday flyer offer.\nVoiceover only. No image description.\n\n0-2 sec VO: ${voiceoverHook}\n2-5 sec VO: Turn one photo into a premium custom birthday flyer prompt in seconds.\n5-8 sec VO: Grab your generator, create faster, and make every celebration look expensive.\n\nOn-screen text ideas:\n- Custom birthday flyer prompts\n- Premium glam results\n- Instant digital download\n- Link in bio`;
+
+  const flexibleStyleLine = `Style/genre freedom: keep the sound open and flexible. Match the mood of any uploaded style reference when provided, but do not lock the song to one genre.`;
+  const sunoJingle = `Suno prompt for a short jingle:\nCreate a catchy birthday promo jingle for "${name}" turning ${age}. Mood: ${preset}. Palette/vibe inspiration: ${palette}. Keep it hooky, premium, celebratory, and easy to remember. Mention custom birthday flyer prompts, instant download, and glam results. ${flexibleStyleLine}`;
+  const sunoShort = `Suno prompt for a 30-second song:\nCreate a 30-second birthday promo song for "${name}" turning ${age}. Keep the tone bold, fun, polished, and sales-ready. Build around ${preset}, ${palette}, and ${visualMood || 'luxury birthday energy'}. Mention custom flyer prompts, easy creation, premium results, and a strong buy-now call to action. ${flexibleStyleLine}`;
+  const sunoLong = `Suno prompt for a 1-minute song:\nCreate a 1-minute promotional birthday anthem for "${name}" turning ${age}. The song should feel cinematic, catchy, and brandable while selling a premium birthday flyer prompt generator. Work in themes of glam, celebration, instant downloads, custom prompts, and standout visuals. Use ${preset} and ${palette} as mood anchors. ${flexibleStyleLine}`;
+  const sunoInfluence = `Suggested Suno settings:\n- Weirdness: 18% to 28%\n- Style influence: 48% to 62%\n- Audio influence: 22% to 36%\n\nReference note: when you attach a photo reference for style influence, let the rhythm and vibe lean toward that mood without copying any exact melody or artist.`;
+
+  let lyrics = `[Intro]\nIt’s ${name}, yeah, the spotlight’s on\nTurn one photo to a flyer that’s strong\n\n[Hook]\nBig glam energy, custom and bright\nBirthday flyer magic made in one night\nClick, create, let the whole room see\nPremium party prompts from you and me\n\n[Verse]\nPick the vibe, pick the theme, make it shine\nGlossy 8K birthday slay every time\nInstant download, fast and so clean\nLuxury flyer looks straight off the screen\n\n[Outro]\nMake it bold, make it pop, let it fly\nGrab your generator, link in bio`;
+  if (lyrics.length > 980) lyrics = lyrics.slice(0, 980);
+
+  const seoKeywords = [
+    `${preset.toLowerCase()} birthday flyer`,
+    'birthday flyer prompt generator',
+    'AI birthday flyer prompt',
+    'custom birthday flyer prompt',
+    'birthday flyer digital product',
+    `${name.toLowerCase()} birthday flyer`
+  ];
+
+  const marketing = `CAPTIONS
+1) Turn one photo into a custom birthday flyer prompt that looks premium, polished, and ready to post. ${name} is serving ${preset.toLowerCase()} energy and this generator does the heavy lifting.
+2) Stop guessing and start creating. This generator builds birthday flyer prompts with glam details, scenes, styling, and marketing extras already baked in.
+3) Want birthday flyers that actually look expensive? Use the generator, copy the prompt, and create faster.
+
+HASHTAGS
+#BirthdayFlyer #BirthdayFlyerPrompt #AIPromptGenerator #DigitalProducts #PartyFlyerDesign #ContentCreatorTools #BirthdayGraphics #LuxuryBirthdayFlyer #CustomPrompts #AIContentCreation
+
+SEO KEYWORDS
+- ${seoKeywords.join('\n- ')}
+
+CTAS
+- Shop the generator now
+- Grab your instant download
+- Create your custom flyer today
+- Tap the link and start designing
+- Turn your photo into a premium flyer prompt
+
+EMAIL ANGLE
+Subject: Create premium birthday flyers faster
+Body starter: Turn one uploaded photo into a polished birthday flyer prompt with themes, styling, scripts, music prompts, and marketing copy built in. ${eventLine || 'Perfect for party creators, parents, and digital sellers.'}
+
+PINTEREST PIN COPY
+Create custom birthday flyer prompts from one photo. Premium glam results, instant download, fast workflow.
+
+TIKTOK HOOK
+Watch me turn one photo into a full birthday flyer prompt, video script, song prompt, and marketing kit in seconds.
+
+FACEBOOK POST
+This birthday flyer prompt generator helps you build polished party prompts fast. Themes, styling, scripts, Suno prompts, captions, and marketing copy are already included.
+
+INSTAGRAM CAPTION
+One photo. One generator. A full birthday flyer prompt system with glam details, scripts, music prompts, and marketing copy ready to go. Link in bio.
+
+YOUTUBE DESCRIPTION
+In this video I’m showing how to use my birthday flyer prompt generator to turn one uploaded image into a premium flyer prompt, an 8-second promo script, Suno song prompts, and a full marketing suite.
+
+AD COPY
+Need birthday flyers that look premium without wasting hours? This generator turns one uploaded photo into a custom flyer prompt, promo video script, Suno song prompts, and ready-to-use marketing copy. Buy it now and create faster.`;
+
+  return {
+    videoScript,
+    sunoJingle,
+    sunoShort,
+    sunoLong,
+    sunoInfluence,
+    sunoLyrics: lyrics,
+    marketing
+  };
+}
+
+function generatePrompt() {
+  const ageGroup = getVal('ageGroup');
+  const gender = getVal('gender');
+  const exactAge = getVal('exactAge') || '[Age not specified]';
+  const customName = getVal('customName') || '[Name not specified]';
+  const flyerSize = getVal('flyerSize');
+  const theme = getVal('theme');
+  const presetTheme = getVal('presetTheme');
+  const textPlacement = getVal('textPlacement') || 'centered';
+  const customFlyerSpecs = getVal('customFlyerSpecs');
+  const colorPalette = getVal('colorPalette');
+  const customColorNotes = getVal('customColorNotes');
+  const scene = getVal('scene');
+  const photoStyle = getVal('photoStyle');
+  const locationStyle = getVal('locationStyle');
+  const backgroundStyle = getVal('backgroundStyle');
+  const fogStyle = getVal('fogStyle');
+  const weatherStyle = getVal('weatherStyle');
+  const timeOfDay = getVal('timeOfDay');
+  const seasonStyle = getVal('seasonStyle');
+  const customSceneNotes = getVal('customSceneNotes');
+  const photoNotes = getVal('photoNotes');
+  const propStyle = getVal('propStyle');
+  const decorationStyle = getVal('decorationStyle');
+  const customDecorNotes = getVal('customDecorNotes');
+  const typography = getVal('typography');
+  const textEffects = getVal('textEffects');
+  const customTypographyNotes = getVal('customTypographyNotes');
+  const artStyle = getVal('artStyle');
+  const shadowStyle = getVal('shadowStyle');
+  const cameraAngle = getVal('cameraAngle');
+  const lightingStyle = getVal('lightingStyle');
+  const customTechnicalNotes = getVal('customTechnicalNotes');
+  const eventDate = getVal('eventDate');
+  const eventTime = getVal('eventTime');
+  const eventLocation = getVal('eventLocation');
+  const eventRSVP = getVal('eventRSVP');
+  const dressCode = getVal('dressCode');
+  const extraDetails = getVal('extraDetails');
+
+  const characterBits = [
+    getVal('skinTone') && `skin tone: ${getVal('skinTone')}`,
+    getVal('eyeColor') && `eye color: ${getVal('eyeColor')}`,
+    getVal('hairColor') && `hair color: ${getVal('hairColor')}`,
+    getVal('femaleHairstyle') && `hairstyle: ${getVal('femaleHairstyle')}`,
+    getVal('maleHairstyle') && `hairstyle: ${getVal('maleHairstyle')}`,
+    getVal('femaleOutfit') && `women outfit: ${getVal('femaleOutfit')}`,
+    getVal('maleOutfit') && `men outfit: ${getVal('maleOutfit')}`,
+    getVal('femaleShoes') && `women shoes: ${getVal('femaleShoes')}`,
+    getVal('maleShoes') && `men shoes: ${getVal('maleShoes')}`,
+    getVal('femaleAccessories') && `women accessories: ${getVal('femaleAccessories')}`,
+    getVal('maleAccessories') && `men accessories: ${getVal('maleAccessories')}`,
+    getVal('lashes') && `lashes: ${getVal('lashes')}`,
+    getVal('makeup') && `makeup: ${getVal('makeup')}`,
+    getVal('hairGems') && `hair gems: ${getVal('hairGems')}`,
+    getVal('eyebrows') && `eyebrows: ${getVal('eyebrows')}`,
+    getVal('nails') && `nails: ${getVal('nails')}`,
+    getVal('earrings') && `earrings: ${getVal('earrings')}`,
+    getVal('hairEdges') && `hair edges: ${getVal('hairEdges')}`,
+    getVal('ornateElements') && `ornate elements: ${getVal('ornateElements')}`,
+    getVal('customCharacterNotes')
+  ].filter(Boolean);
+
+  const props = [];
+  document.querySelectorAll('.checkbox-item input[type="checkbox"]:checked').forEach(checkbox => props.push(checkbox.value));
+  const propsTextParts = [propStyle, decorationStyle, props.join(', ')].filter(Boolean);
+  const propsText = propsTextParts.length ? propsTextParts.join('; ') : 'balloons, confetti, and sparkles';
+  const isTextOnly = photoStyle === 'no photo text-only flyer';
+
+  let prompt = `Using the uploaded image as reference, create a high-quality birthday flyer design`;
+  if (flyerSize) prompt += ` in ${flyerSize}`;
+  prompt += `.\n`;
+  if (presetTheme) prompt += `Preset theme: ${presetTheme}.\n`;
+  if (theme) prompt += `Theme / vibe: ${theme}.\n`;
+  if (colorPalette) prompt += `Color palette: ${colorPalette}.\n`;
+  if (customColorNotes) prompt += `Extra color notes: ${customColorNotes}.\n`;
+  if (scene) prompt += `Scene style: ${scene}.\n`;
+  if (locationStyle) prompt += `Location: ${locationStyle}.\n`;
+  if (backgroundStyle) prompt += `Background: ${backgroundStyle}.\n`;
+  if (fogStyle) prompt += `Fog: ${fogStyle}.\n`;
+  if (weatherStyle) prompt += `Weather: ${weatherStyle}.\n`;
+  if (timeOfDay) prompt += `Time of day: ${timeOfDay}.\n`;
+  if (seasonStyle) prompt += `Season: ${seasonStyle}.\n`;
+  if (customSceneNotes) prompt += `Extra scene notes: ${customSceneNotes}.\n`;
+  if (!isTextOnly && photoStyle) {
+    prompt += `Main layout / photo style: ${photoStyle}.\n`;
+    if (gender || ageGroup || photoNotes) prompt += `Person direction: ${[gender, ageGroup, photoNotes].filter(Boolean).join(', ')}.\n`;
+  } else if (photoStyle) {
+    prompt += `Layout direction: ${photoStyle}.\n`;
+  }
+  if (characterBits.length) prompt += `Character styling: ${characterBits.join('; ')}.\n`;
+  prompt += `Create the subject as a hyper-realistic, glossy, ultra-detailed 8K character with premium polish.\n`;
+  prompt += `Age highlight: BIG number "${exactAge}"`;
+  if (typography) prompt += ` in ${typography}`;
+  if (textEffects) prompt += ` with ${textEffects}`;
+  prompt += `.\n`;
+  prompt += `Name text: "${customName}" prominent and eye-catching.\n`;
+  prompt += `Text placement: ${textPlacement}. Keep text visually balanced and centered when appropriate.\n`;
+  prompt += `Decor and prop direction: include ${propsText} appropriate for the age group.\n`;
+  prompt += `Add balloon clusters, confetti accents, and matching graphic elements throughout.\n`;
+  if (artStyle) prompt += `Art style: ${artStyle}.\n`;
+  if (shadowStyle) prompt += `Shadow style: ${shadowStyle}.\n`;
+  if (cameraAngle) prompt += `Camera angle: ${cameraAngle}.\n`;
+  if (lightingStyle) prompt += `Lighting: ${lightingStyle}.\n`;
+  if (customFlyerSpecs) prompt += `Extra flyer specifications: ${customFlyerSpecs}.\n`;
+  if (customDecorNotes) prompt += `Extra decor notes: ${customDecorNotes}.\n`;
+  if (customTypographyNotes) prompt += `Extra typography notes: ${customTypographyNotes}.\n`;
+  if (customTechnicalNotes) prompt += `Extra technical notes: ${customTechnicalNotes}.\n`;
+  prompt += `Use crisp composition, premium lighting, clean layering, strong readability, and print-ready clarity.\n`;
+  prompt += `Include these details in clean readable text:\n`;
+  const eventDetails = [];
+  if (eventDate) eventDetails.push(`Date: ${eventDate}`);
+  if (eventTime) eventDetails.push(`Time: ${eventTime}`);
+  if (eventLocation) eventDetails.push(`Location: ${eventLocation}`);
+  if (eventRSVP) eventDetails.push(`RSVP: ${eventRSVP}`);
+  if (dressCode) eventDetails.push(`Dress Code: ${dressCode}`);
+  if (eventDetails.length) prompt += eventDetails.join(' | ') + '\n';
+  if (extraDetails) prompt += `Extra details: ${extraDetails}\n`;
+  prompt += `Keep everything cohesive, visually balanced, celebration-ready, and premium.`;
+  outputBox.textContent = prompt;
+  outputBox.classList.remove('output-empty');
+  copyBtn.style.display = 'block';
+  infoMessage.style.display = 'none';
+
+  const gptOutputs = buildCustomGPTOutputs();
+  setOutputBox(instructionsOutputBox, instructionsCopyBtn, gptOutputs.instructions, 'Your Custom GPT instructions will appear here...');
+  setOutputBox(starterQuestionsOutputBox, starterQuestionsCopyBtn, gptOutputs.starterQuestions, 'Your starter questions will appear here...');
+  setOutputBox(knowledgeOutputBox, knowledgeCopyBtn, gptOutputs.knowledge, 'Your knowledge section will appear here...');
+
+  const creativeOutputs = buildCreativeMarketingOutputs({
+    ageGroup,
+    gender,
+    exactAge,
+    customName,
+    flyerSize,
+    presetTheme,
+    theme,
+    colorPalette,
+    scene,
+    photoStyle,
+    locationStyle,
+    backgroundStyle,
+    fogStyle,
+    weatherStyle,
+    timeOfDay,
+    seasonStyle,
+    artStyle,
+    lightingStyle,
+    eventDate,
+    eventTime,
+    eventLocation
+  });
+  setOutputBox(videoScriptOutputBox, videoScriptCopyBtn, creativeOutputs.videoScript, 'Your 8-second video prompt script will appear here...');
+  setOutputBox(sunoJingleOutputBox, sunoJingleCopyBtn, creativeOutputs.sunoJingle, 'Your Suno jingle prompt will appear here...');
+  setOutputBox(sunoShortOutputBox, sunoShortCopyBtn, creativeOutputs.sunoShort, 'Your 30-second Suno song prompt will appear here...');
+  setOutputBox(sunoLongOutputBox, sunoLongCopyBtn, creativeOutputs.sunoLong, 'Your 1-minute Suno song prompt will appear here...');
+  setOutputBox(sunoInfluenceOutputBox, sunoInfluenceCopyBtn, creativeOutputs.sunoInfluence, 'Your Suno influence suggestions will appear here...');
+  setOutputBox(sunoLyricsOutputBox, sunoLyricsCopyBtn, creativeOutputs.sunoLyrics, 'Your Suno lyrics will appear here...');
+  setOutputBox(marketingOutputBox, marketingCopyBtn, creativeOutputs.marketing, 'Your marketing suite will appear here...');
+}
+
+function fallbackCopy(text, onSuccess) {
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.select();
+  try {
+    document.execCommand('copy');
+    if (typeof onSuccess === 'function') onSuccess();
+  } catch (err) {
+    console.error('Copy failed:', err);
+  }
+  document.body.removeChild(textarea);
+}
+
+function wireCopyButton(button, getText, onSuccess) {
+  if (!button) return;
+  button.addEventListener('click', (e) => {
+    e.preventDefault();
+    const text = typeof getText === 'function' ? getText() : '';
+    if (!text) return;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        if (typeof onSuccess === 'function') onSuccess();
+      }).catch(() => fallbackCopy(text, onSuccess));
+    } else {
+      fallbackCopy(text, onSuccess);
+    }
+  });
+}
+
+function flashCopyButton(button, defaultText) {
+  if (!button) return;
+  button.classList.add('copied');
+  button.textContent = '✓ Copied!';
+  setTimeout(() => {
+    button.classList.remove('copied');
+    button.textContent = defaultText;
+  }, 2000);
+}
+
+function showCopySuccess() {
+  infoMessage.style.display = 'block';
+  flashCopyButton(copyBtn, 'Copy');
+  setTimeout(() => {
+    infoMessage.style.display = 'none';
+  }, 2000);
+}
+
+wireCopyButton(copyBtn, () => outputBox.textContent, showCopySuccess);
+wireCopyButton(instructionsCopyBtn, () => instructionsOutputBox.textContent, () => flashCopyButton(instructionsCopyBtn, 'Copy Instructions'));
+wireCopyButton(starterQuestionsCopyBtn, () => starterQuestionsOutputBox.textContent, () => flashCopyButton(starterQuestionsCopyBtn, 'Copy Starter Questions'));
+wireCopyButton(knowledgeCopyBtn, () => knowledgeOutputBox.textContent, () => flashCopyButton(knowledgeCopyBtn, 'Copy Knowledge'));
+wireCopyButton(videoScriptCopyBtn, () => videoScriptOutputBox.textContent, () => flashCopyButton(videoScriptCopyBtn, 'Copy Video Script'));
+wireCopyButton(sunoJingleCopyBtn, () => sunoJingleOutputBox.textContent, () => flashCopyButton(sunoJingleCopyBtn, 'Copy Jingle Prompt'));
+wireCopyButton(sunoShortCopyBtn, () => sunoShortOutputBox.textContent, () => flashCopyButton(sunoShortCopyBtn, 'Copy 30s Song Prompt'));
+wireCopyButton(sunoLongCopyBtn, () => sunoLongOutputBox.textContent, () => flashCopyButton(sunoLongCopyBtn, 'Copy 1-Min Song Prompt'));
+wireCopyButton(sunoInfluenceCopyBtn, () => sunoInfluenceOutputBox.textContent, () => flashCopyButton(sunoInfluenceCopyBtn, 'Copy Influence Settings'));
+wireCopyButton(sunoLyricsCopyBtn, () => sunoLyricsOutputBox.textContent, () => flashCopyButton(sunoLyricsCopyBtn, 'Copy Lyrics'));
+wireCopyButton(marketingCopyBtn, () => marketingOutputBox.textContent, () => flashCopyButton(marketingCopyBtn, 'Copy Marketing Suite'));
+</script>
+
+</body>
+</html>
